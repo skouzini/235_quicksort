@@ -99,6 +99,8 @@ now sort the values 44,55,33 to get
 33,75,23,43,44,12,64,77,55
 and return the middle index 4
 ```
+The lab mentions that you should follow the algorithm on page 611.
+![book page](https://mjcleme.github.io/page611.png )
 Now implement
 ```c++
 	/*
