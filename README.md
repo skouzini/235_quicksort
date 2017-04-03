@@ -15,7 +15,7 @@ Now you will start implementing the functions.  Lets start with
 	* @return
 	*		true if the array was created, false otherwise
 	*/
-  createArray(int capacity) = 0;
+        createArray(int capacity) = 0;
 ```
 You will need to declare a class variable to point to the array you allocate with "new int[capacity]"
 
