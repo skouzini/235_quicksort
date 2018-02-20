@@ -135,7 +135,7 @@ left = 0, right = 8, pivotIndex = 4
 First select the value on the left of the pivot that is greater than the pivot (75) and exchange it with a value on the right of the pivot that is less than the pivot with the greatest index (12) and exchange the items in the array.
 33,12,23,43,44,75,64,77,55
 Continue to iterate until all values to the left of the pivot are less than the pivot and all values to the right of the pivot are greater than the pivot.
-
+```
 Now you just need to implement
 ```c++
 	/*
