@@ -8,7 +8,8 @@ QS::QS() {
     array = NULL;
 }
 QS::~QS() {
-    delete array;
+    delete [] array;
+    array = 0;
 }
 
 /*
@@ -20,7 +21,25 @@ QS::~QS() {
 * Does nothing if the array is empty.
 */
 void QS::sortAll() {
-    
+    if (array != NULL) {
+        int left = 0;
+        int right = (array_pos - 1);
+        sortAll(left, right);
+    }
+};
+
+void QS::sortAll(int left, int right) {
+    if (left != right) {
+        int pivot = medianOfThree(left, right);
+        if (left != pivot || pivot != right) {
+            pivot = partition(left, right, pivot);
+            cout << endl << "Left: " << left << ", Right: " << right << ", Pivot: " << pivot << endl;
+            if (pivot != -1) {
+                sortAll(left, pivot - 1);
+                sortAll(pivot + 1, right);
+            }
+        }
+    }
 }
 
 /*
@@ -49,22 +68,30 @@ void QS::sortAll() {
 *		the index of the pivot (middle index); -1 if provided with invalid input
 */
 int QS::medianOfThree(int left, int right) {
-    cout << "starting medianOfThree...\n";///////////////
-    //int swaps = 0;
-    if (array == NULL || (left < 0 || right > array_pos - 1) || right < left) {
-        cout << "...returning -1 from medianOfThree\n";//////////////
+    if (array == NULL || (left < 0 || right > array_pos - 1) || right < left || left == right) {
         return -1;
     }
     else {
-        int *temp;
+        int temp;
         middle = (left + right) / 2;
         
-        MedianSort(*(array + left), *(array + middle), *(array + right));
-        // *(array + left) = *(temp + 0);
-        // *(array + middle) = *(temp + 1);
-        // *(array + right) = *(temp + 2);
+        do {
+            if (*(array + left) <= *(array + middle) && *(array + middle) <= *(array + right)) {
+                break;
+            }
+            else if (*(array + middle) < *(array + left)) {
+                temp = *(array + middle);
+                *(array + middle) = *(array + left);
+                *(array + left) = temp;
+            }
+            else if (*(array + right) < *(array + middle)) {
+                temp = *(array + right);
+                *(array + right) = *(array + middle);
+                *(array + middle) = temp;
+            }
+            
+    } while(true);
         
-        cout << "...returning middle from medianOfThree\n";///////////////
         return middle;
     }
 }
@@ -93,57 +120,50 @@ int QS::medianOfThree(int left, int right) {
 * 		provided with bad input
 */
 int QS::partition(int left, int right, int pivotIndex) {
-    cout << "starting partition...\n";///////////////
-    int tempInt;
-    int median_val = *(array + pivotIndex);
-    bool up_found = false;
-    bool down_found = false;
-    
     if (array == NULL 
-    || (left < 0 || right > array_pos - 1) 
-    || right < left 
-    || !(pivotIndex > left && pivotIndex < right)) {
-        cout << "...returning -1 from partition\n";///////////////
+    || left < 0 
+    || right > array_pos - 1
+    || right <= left 
+    || pivotIndex < left 
+    || pivotIndex > right
+    || left == right) {
         return -1;
     }
     else {
         int up = left + 1;
-        int down = right - 1;
-        int *temp;
-        MedianSort(*(array + left), *(array + pivotIndex), *(array + right));
-        // *(array + left) = *(temp + 0);
-        // *(array + pivotIndex) = *(temp + 1);
-        // *(array + right) = *(temp + 2);
+        int down = right;
+        int temp;
+        int pivot_val = *(array + pivotIndex);
+        cout << "Partiton: " << pivot_val << endl;
         
-        tempInt = *(array + pivotIndex); 
+        cout << "Swapping left and pivot" << endl;
+        temp = *(array + pivotIndex);
         *(array + pivotIndex) = *(array + left);
-        *(array + left) = tempInt;
+        *(array + left) = temp;
         
-      do {
-        while (*(array + up) < median_val || up < right - 1) {
-            up++;
-        }
+        cout << this->getArray() << endl;
         
-        while (*(array + down) > median_val || down > left) {
-            down--;
-        }
-        
-        if (up < down) {
-            tempInt = *(array + up); 
-            *(array + up) = *(array + down);
-            *(array + down) = tempInt;
-        }
-        else {
-            break;
-        }
-      } while (up < down);
-      
-      tempInt = *(array + down); 
-      *(array + down) = *(array + left);
-      *(array + left) = tempInt;
-      
-      cout << "...returning down from partition\n";/////////////////
-      return down;
+        do {
+           
+            for (up = left + 1; *(array + up) <= pivot_val; ++up);
+            for (down = right; *(array + down) >= pivot_val && down >= up; --down);
+            
+            if (up < down) {
+                temp = *(array + up); 
+                *(array + up) = *(array + down);
+                *(array + down) = temp;
+            }
+            else {
+                break;
+            }
+        } while (up < down);
+          
+        temp = *(array + down); 
+        *(array + down) = *(array + left);
+        *(array + left) = temp;
+          
+        cout << "...returning " << down << " from partition\n";/////////////////
+        return down;
     }
 }
 
@@ -159,21 +179,18 @@ int QS::partition(int left, int right, int pivotIndex) {
 *		the string representation of the current array
 */
 string QS::getArray() const {
-    cout << "starting getArray...\n";//////////////
     ostringstream out_array;
     if (array == NULL) {
-        cout << "...returning out_array from getArray\n";/////////////
         return out_array.str();
     }
     else if (array != NULL) {
         for (int i = 0; i < array_pos; ++i) {
             out_array << *(array + i);
             if (i < array_pos - 1) {
-                out_array << ", ";
+                out_array << ",";
             }
         }
         
-        cout << "...returning out_array from getArray\n";/////////////
         return out_array.str();
     }
 }
@@ -216,7 +233,6 @@ bool QS::addToArray(int value) {
 *		true if the array was created, false otherwise
 */
 bool QS::createArray(int capacity) {
-    cout << "starting createArray...\n";////////////
     array_size = capacity;
     array = new int[capacity];
     array_pos = 0;
@@ -233,28 +249,4 @@ bool QS::createArray(int capacity) {
 void QS::clear() {
     array = NULL;
     array_pos = 0;
-}
-
-void QS::MedianSort(int& left, int& middle, int& right) {
-    cout << "starting MedianSort...\n";////////////
-    
-    do {
-            if (left <= middle && middle <= right) {
-                break;
-            }
-            else if (middle < left) {
-                int temp = middle;
-                middle = left;
-                left = temp;
-            }
-            else if (right < middle) {
-                int temp = right;
-                right = middle;
-                middle = temp;
-            }
-            
-    } while(true);
-    
-    cout << "...returning sort from Median Sort\n";//////////
-    //return sort;
 }

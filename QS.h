@@ -14,13 +14,14 @@ private:
     int array_pos;
     int current_size;
     int middle;
-    int sort[3];
     
 public:
 	QS();
 	~QS();
 
 	void sortAll();
+
+	void sortAll(int left, int right);
 
 	int medianOfThree(int left, int right);
 
@@ -35,6 +36,4 @@ public:
 	bool createArray(int capacity);
 
 	void clear();
-	
-	void MedianSort(int& left, int& middle, int& right);
 };

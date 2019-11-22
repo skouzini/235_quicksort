@@ -23,7 +23,7 @@ addToArray 3
 getArray
 medianOfThree 1 3
 getArray
-partition-1 2 1
+partition -1 2 1
 partition 0 3 2
 partition 1 1 1
 medianOfThree 2 0
